@@ -2,6 +2,7 @@
 **Obtížnost**: \*\*
 
 **Zadání**: Navrhněte a implementujte obdobu Gaussovy eliminační metody, která řeší soustavy s třídiagonálními maticemi. Svůj program otestujte na soustavě (pro $n=100$):
+
 $$
 \begin{bmatrix} 
   3 & -1 &  &  &  \\
