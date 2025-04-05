@@ -103,9 +103,20 @@ end
 
 
 % Funkce pro reseni systemu
-function x = solve_tridiagonal(A, d)
+function x = solve_tridiagonal(A, b)
+    % ARGUMENTY:
+    %   A         ... tridiagonalni matice
+    %   b         ... vektor pravych stran
 
-    n = length(d);
+    % kontrola vstupu
+    if ~isvector(b)
+        error('Error: Input must be a vector.\n');
+    end
+    if ~ismatrix(A)
+        error('Error: Input must be a matrix.\n')
+    end
+
+    n = length(b);
     x = zeros(n,1);
 
     % rozpoznani diagonal
@@ -122,14 +133,14 @@ function x = solve_tridiagonal(A, d)
         end
     end
 
-    % dopredna eliminace
+    % eliminace prvku 
     for i = 2:n
         if diag_mid(i-1) == 0  % zpetna kontrola pivotu
             error('System is not solvable: zero pivot at row %d', i-1);
         end
-        m = diag_low(i-1) / diag_mid(i-1);
-        diag_mid(i) = diag_mid(i) - m * diag_high(i-1);  % aktualizace pivotu
-        d(i) = d(i) - m * d(i-1);  % aktualizace vektoru p. strany
+        m = diag_low(i-1) / diag_mid(i-1);  % multiplikator pro aktualni radek
+        diag_mid(i) = diag_mid(i) - m * diag_high(i-1);  % eliminace pod pivotem
+        b(i) = b(i) - m * b(i-1);  % aktualizace vektoru p. strany
     end
 
     % kontrola pivotu pro resitelnost
@@ -138,20 +149,27 @@ function x = solve_tridiagonal(A, d)
     end
 
     % zpetna substituce
-    x(n) = d(n) / diag_mid(n);
-    for i = n-1:-1:1
-        if diag_mid(i) == 0
+    x(n) = b(n) / diag_mid(n);
+    for i = n-1:-1:1  % dekrementace i od poctu radku po 1
+        if diag_mid(i) == 0  % overeni resitelnosti
             error('System is not solvable: zero pivot at row %d', i);
         end
-        x(i) = (d(i) - diag_high(i) * x(i+1)) / diag_mid(i);
+
+        % zapis vysledku
+        x(i) = (b(i) - diag_high(i) * x(i+1)) / diag_mid(i);
     end
 end
 
 
 %% main
-A = fill_diagonal(A,-1,[3;4],-1);
-b = fill_rhsvector(b,[2;1],true);
+% A = fill_diagonal(A,-1,[3;4],-1);
+% b = fill_rhsvector(b,[2;1],true);
+
+A = fill_diagonal(A,2,1,2);
+b = fill_rhsvector(b,[3;2],true);
 
 disp(A);
 
-disp(solve_tridiagonal(A,b));
+x = solve_tridiagonal(A,b);
+
+disp(x);
