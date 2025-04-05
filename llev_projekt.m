@@ -161,15 +161,45 @@ function x = solve_tridiagonal(A, b)
 end
 
 
-%% main
-% A = fill_diagonal(A,-1,[3;4],-1);
-% b = fill_rhsvector(b,[2;1],true);
+%% Vyhodnoceni casove narocnosti
+filename = 'casova_narocnost.csv';
 
-A = fill_diagonal(A,2,1,2);
-b = fill_rhsvector(b,[3;2],true);
+% hlavicka csv
+if exist(filename, 'file') ~= 2
+    writetable(table("n", "elapsedTime"), filename, 'WriteVariableNames', false);
+end
 
-disp(A);
+for n = logspace(1, 2)
+    n = round(n);  % n je cele cislo
 
-x = solve_tridiagonal(A,b);
+    A = zeros(n);  % reset promennych
+    b = zeros(n,1);
 
-disp(x);
+    tic  % mereni casu
+        A = fill_diagonal(A, -1, [3;4], -1);
+        b = fill_rhsvector(b, [2;1], true);
+        x = solve_tridiagonal(A, b);
+    elapsedTime = toc;
+
+    % zapis do csv
+    T = table(n, elapsedTime);
+    writetable(T, filename, 'WriteMode', 'append');
+end
+
+
+
+%% Uzivatelska cast kodu
+% soustava ze zadani
+A = fill_diagonal(A,-1,[3;4],-1);
+b = fill_rhsvector(b,[2;1],true);
+
+% % reseni vlastni soustavy - test
+% A = fill_diagonal(A,2,1,2);
+% b = fill_rhsvector(b,[3;2],true);
+
+disp(A);  % kontrola vstupu
+disp(b);  % kontrola vstupu
+
+x = solve_tridiagonal(A,b);  % volani funkce pro reseni
+
+disp(x);  % kontrola vystupu
