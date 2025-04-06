@@ -7,7 +7,7 @@
 % Lukas Lev, 2566660
 
 %% Deklarace
-n = 10;  % pocet rovnic
+n = 100;  % pocet rovnic
 A = zeros(n);  % vstupni matice
 b = zeros(n,1);
 
@@ -161,30 +161,30 @@ function x = solve_tridiagonal(A, b)
 end
 
 
-%% Vyhodnoceni casove narocnosti
-filename = 'casova_narocnost.csv';
-
-% hlavicka csv
-if exist(filename, 'file') ~= 2
-    writetable(table("n", "elapsedTime"), filename, 'WriteVariableNames', false);
-end
-
-for n = logspace(1, 2)
-    n = round(n);  % n je cele cislo
-
-    A = zeros(n);  % reset promennych
-    b = zeros(n,1);
-
-    tic  % mereni casu
-        A = fill_diagonal(A, -1, [3;4], -1);
-        b = fill_rhsvector(b, [2;1], true);
-        x = solve_tridiagonal(A, b);
-    elapsedTime = toc;
-
-    % zapis do csv
-    T = table(n, elapsedTime);
-    writetable(T, filename, 'WriteMode', 'append');
-end
+% %% Vyhodnoceni casove narocnosti
+% filename = 'casova_narocnost.csv';
+% 
+% % hlavicka csv
+% if exist(filename, 'file') ~= 2
+%     writetable(table("n", "elapsedTime"), filename, 'WriteVariableNames', false);
+% end
+% 
+% for n = logspace(1, 3)
+%     n = round(n);  % n je cele cislo
+% 
+%     A = zeros(n);  % reset promennych
+%     b = zeros(n,1);
+% 
+%     tic  % mereni casu
+%         A = fill_diagonal(A, -1, [3;4], -1);
+%         b = fill_rhsvector(b, [2;1], true);
+%         x = solve_tridiagonal(A, b);
+%     elapsedTime = toc;
+% 
+%     % zapis do csv
+%     T = table(n, elapsedTime);
+%     writetable(T, filename, 'WriteMode', 'append');
+% end
 
 
 
